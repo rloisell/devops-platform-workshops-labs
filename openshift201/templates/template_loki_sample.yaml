@@ -98,6 +98,12 @@ objects:
       name: ${NAME}
   - apiVersion: apps/v1
     kind: StatefulSet
+    metadata:
+      name: ${LOKI_SERVICE_NAME}
+      labels:
+        app: ${LOKI_SERVICE_NAME}
+      annotations:
+        {}
     spec:
       podManagementPolicy: OrderedReady
       replicas: 1
