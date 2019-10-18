@@ -1,0 +1,48 @@
+#!/usr/bin/env groovy
+
+//ENV Vars
+def TOOLS_NAMESPACE = "4zq6uj-rloisell-ocp201-tst-tools"
+def DEV_NAMESPACE = "4zq6uj-rloisell-ocp201-tst-dev"
+def PROD_NAMESPACE = "4zq6uj-rloisell-ocp201-tst-prod"
+def LOKI_SERVICE  = "loki"
+
+//Pipeline
+node {
+       stage ('Deploy Loki to Dev'){
+                dir ('simple_pipeline') {
+                    checkout scm
+                    sh "oc process -f openshift201/templates/template_loki_sample.yaml -p NAME=${LOKI_SERVICE} | oc apply -f - -n ${DEV_NAMESPACE}"
+                    sh "echo Wait for service to be up"
+                    timeout (time: 180, unit: 'SECONDS'){
+                        openshift.withCluster() {
+                        openshift.withProject("${DEV_NAMESPACE}") {
+                            def dc = openshift.selector('statefulset', "${LOKI_SERVICE}")
+                            // this will wait until the desired replicas are available
+                            dc.rollout().status()
+                        }
+                        }
+                    }
+
+             }
+        }
+	stage ('Deploy to prod input'){
+		input 'Ready to deploy to PROD?'
+	}
+	stage ('Deploy Loki to Prod'){
+                dir ('simple_pipeline') {
+                    checkout scm
+                    sh "oc process -f openshift201/templates/template_loki_sample.yaml -p NAME=${LOKI_SERVICE} | oc apply -f - -n ${PROD_NAMESPACE}"
+                    sh "echo Wait for service to be up"
+                    timeout (time: 180, unit: 'SECONDS'){
+                        openshift.withCluster() {
+                        openshift.withProject("${PROD_NAMESPACE}") {
+                            def dc = openshift.selector('statefulset', "${LOKI_SERVICE}")
+                            // this will wait until the desired replicas are available
+                            dc.rollout().status()
+                        }
+                        }
+                    }
+
+             }
+        }
+    }
