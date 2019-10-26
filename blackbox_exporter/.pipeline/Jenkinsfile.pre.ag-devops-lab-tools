@@ -1,9 +1,9 @@
 #!/usr/bin/env groovy
 
 //ENV Vars
-def TOOLS_NAMESPACE = "ag-devops-lab-tools"
-def DEV_NAMESPACE = "ag-devops-lab-tools"
-def PROD_NAMESPACE = "ag-devops-lab-deploy"
+def TOOLS_NAMESPACE = "4zq6uj-rloisell-ocp201-tst-tools"
+def DEV_NAMESPACE = "4zq6uj-rloisell-ocp201-tst-dev"
+def PROD_NAMESPACE = "4zq6uj-rloisell-ocp201-tst-prod"
 def LOKI_SERVICE  = "loki"
 
 
