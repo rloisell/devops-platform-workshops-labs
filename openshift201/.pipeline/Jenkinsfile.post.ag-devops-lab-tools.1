@@ -25,9 +25,9 @@ node {
 
              }
         }
-	//stage ('Deploy to prod input'){
-	//	input 'Are you ready to deploy to PROD?'
-	//}
+	stage ('Deploy to prod input'){
+		input 'Are you ready to deploy to PROD?'
+	}
 	stage ('Deploy Loki to Prod'){
                 dir ('simple_pipeline') {
                     checkout scm
